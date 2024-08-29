@@ -1,0 +1,11 @@
+numpy
+pillow
+
+torch
+torchvision
+
+transformers
+
+opencv-python
+mediapipe
+
