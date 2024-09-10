@@ -3,7 +3,9 @@ from pathlib import Path
 from PIL import Image
 
 from shade.matter import Matter
-from shade.segmenter import Segmenter
+from shade.remove_bg import RemoveBG
+from shade.segformer_segmenter import SegformerSegmenter
+from shade.selfie_segmenter import SelfieSegmenter
 from shade.trimap_generator import TrimapGenerator
 from shade.utils import overlay_mask_on_image
 
@@ -19,34 +21,37 @@ if path.is_file() == False:
 
 image = Image.open(path.absolute()).convert("RGB")
 
+removebg = RemoveBG()
 
-segmenter = Segmenter()
-trimap_generator = TrimapGenerator(dilation_percentage=0.01, min_dilation=5)
-matter = Matter()
+removebg.process(image).save("results/removebg.png")
 
-print("Loading tools")
-segmenter.init()
-matter.init()
+# segmenter = SegformerSegmenter()
+# trimap_generator = TrimapGenerator(dilation_percentage=0.01, min_dilation=5)
+# matter = Matter()
 
-print("Done")
+# print("Loading tools")
+# segmenter.init()
+# matter.init()
 
+# print("Done")
+# # mask = segmenter.segment(image)
 
-masks = segmenter.segment(image)
+# masks = segmenter.segment(image)
 
-for mask in masks:
-    print(f"Generating mask: {mask.label.name}")
+# for mask in masks:
+#     print(f"Generating mask: {mask.label.name}")
 
-    trimap = trimap_generator.generate(mask.image)
-    mated_mask = matter.mate(mask.image, trimap)
-    preview = overlay_mask_on_image(image, mated_mask)
+#     trimap = trimap_generator.generate(mask.image)
+#     mated_mask = matter.mate(mask.image, trimap)
+#     preview = overlay_mask_on_image(image, mated_mask)
 
-    preview_path = Path(f"results/{mask.label.name}.png")
-    mated_mask_path = Path(f"results/{mask.label.name}-mask.png")
-    trimap_path = Path(f"results/{mask.label.name}-trimap.png")
+#     preview_path = Path(f"results/{mask.label.name}.png")
+#     mated_mask_path = Path(f"results/{mask.label.name}-mask.png")
+#     trimap_path = Path(f"results/{mask.label.name}-trimap.png")
 
-    preview_path.parent.mkdir(parents=True, exist_ok=True)
+#     preview_path.parent.mkdir(parents=True, exist_ok=True)
 
-    preview.save(preview_path.absolute())
-    mated_mask.save(mated_mask_path.absolute())
+#     preview.save(preview_path.absolute())
+#     mated_mask.save(mated_mask_path.absolute())
 
-    overlay_mask_on_image(image, trimap).save(trimap_path.absolute())
+#     overlay_mask_on_image(image, trimap).save(trimap_path.absolute())

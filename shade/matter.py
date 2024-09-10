@@ -10,8 +10,8 @@ from PIL import Image
 @dataclass
 class Matter():
     device: str = "cuda" if torch.cuda.is_available() else "cpu"
-    kernel_size: tuple[int, int] = (1024, 1024)
-    model_name: str = 'hustvl/vitmatte-base-composition-1k'
+    kernel_size: tuple[int, int] = (2048, 2048)
+    model_name: str = 'hustvl/vitmatte-small-composition-1k'
 
     def init(self):
         self.processor = VitMatteImageProcessor.from_pretrained(

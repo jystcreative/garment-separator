@@ -1,5 +1,7 @@
 __pycache__
 .venv
 .models
-input.png
+env.sh
+input*.png
 results
+
