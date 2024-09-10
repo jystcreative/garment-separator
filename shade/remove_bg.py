@@ -2,6 +2,7 @@ import io
 import os
 import requests
 from PIL import Image
+from shade.types import Label, Mask
 from shade.utils import resize_to_limit
 
 
@@ -15,7 +16,7 @@ class RemoveBG:
         blob.seek(0)
         return blob
 
-    def process(self, image: Image.Image) -> Image.Image:
+    def process(self, image: Image.Image) -> Mask:
         resized_image = resize_to_limit(image, 10)
 
         blob = self._image_to_blob(resized_image)
@@ -34,4 +35,4 @@ class RemoveBG:
             (image.width, image.height), Image.LANCZOS)
 
         alpha_channel = mask_resized.split()[-1]
-        return alpha_channel
+        return Mask(label=Label.SUBJECT, image=alpha_channel)

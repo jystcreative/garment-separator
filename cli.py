@@ -5,6 +5,7 @@ from PIL import Image
 from shade.matter import Matter
 from shade.remove_bg import RemoveBG
 from shade.segformer_segmenter import SegformerSegmenter
+from shade.segment_task import SegmentTask
 from shade.selfie_segmenter import SelfieSegmenter
 from shade.trimap_generator import TrimapGenerator
 from shade.utils import overlay_mask_on_image
@@ -21,37 +22,14 @@ if path.is_file() == False:
 
 image = Image.open(path.absolute()).convert("RGB")
 
-removebg = RemoveBG()
+task = SegmentTask()
+task.init()
+masks = task.run(image)
 
-removebg.process(image).save("results/removebg.png")
+for mask in masks:
 
-# segmenter = SegformerSegmenter()
-# trimap_generator = TrimapGenerator(dilation_percentage=0.01, min_dilation=5)
-# matter = Matter()
+    mask_file = Path(f"results/{mask.label.name}-mask.png")
+    mask.image.save(mask_file.absolute())
 
-# print("Loading tools")
-# segmenter.init()
-# matter.init()
-
-# print("Done")
-# # mask = segmenter.segment(image)
-
-# masks = segmenter.segment(image)
-
-# for mask in masks:
-#     print(f"Generating mask: {mask.label.name}")
-
-#     trimap = trimap_generator.generate(mask.image)
-#     mated_mask = matter.mate(mask.image, trimap)
-#     preview = overlay_mask_on_image(image, mated_mask)
-
-#     preview_path = Path(f"results/{mask.label.name}.png")
-#     mated_mask_path = Path(f"results/{mask.label.name}-mask.png")
-#     trimap_path = Path(f"results/{mask.label.name}-trimap.png")
-
-#     preview_path.parent.mkdir(parents=True, exist_ok=True)
-
-#     preview.save(preview_path.absolute())
-#     mated_mask.save(mated_mask_path.absolute())
-
-#     overlay_mask_on_image(image, trimap).save(trimap_path.absolute())
+    preview_file = Path(f"results/{mask.label.name}.png")
+    overlay_mask_on_image(image, mask.image).save(preview_file.absolute())

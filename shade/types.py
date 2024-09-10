@@ -4,6 +4,7 @@ from PIL import Image
 
 
 class Label(Enum):
+    SUBJECT = 'subject'
     BACKGROUND = 'background'
     HAIR = 'hair'
 
